@@ -2,9 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
-// app.use(express.bodyParser());
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // import user.js
 import { getUserList } from './src/user'
 
@@ -24,15 +23,15 @@ app.get('/users', (req, res) => {
 /*
 *   Store Data
 */
-app.post('/addUser', urlencodedParser, (req, res) => {
-    if (!req.body.nama){
-        return res.status(400).send({
+app.post('/addUser', (request, response) => {
+    if (!request.body.status){
+        return response.status(400).send({
             success: 'false',
             message: 'name is required',
         });
     }
-    else if (!req.body.status){
-        return res.status(400).send({
+    else if (!request.body.nama){
+        return response.status(400).send({
             success: 'false',
             message: 'status is required',
         });
@@ -40,9 +39,9 @@ app.post('/addUser', urlencodedParser, (req, res) => {
 
     const user = { 
         id: userList.length + 1,
-        isPublic: req.body.isPublic,
-        name: req.body.name,
-        status: req.body.status
+        isPublic: request.body.isPublic,
+        name: request.body.name,
+        status: request.body.status
     };
 
     userList.push(user);
